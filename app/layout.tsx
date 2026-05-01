@@ -81,14 +81,15 @@ export default function RootLayout({
                             strategy="afterInteractive"
                         />
 
-                        <Script id="ga" strategy="afterInteractive">
+                        <Script id="ga4" strategy="afterInteractive">
                             {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
+
                 gtag('js', new Date());
-                gtag('config', '${GA_ID}', {
-                  page_path: window.location.pathname,
-                });
+
+                // IMPORTANTE: não sobrescrever page_path manualmente
+                gtag('config', '${GA_ID}');
               `}
                         </Script>
                     </>
