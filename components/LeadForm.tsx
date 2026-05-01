@@ -15,16 +15,31 @@ type FieldErrors = {
 export default function LeadForm() {
     const formRef = useRef<HTMLFormElement>(null);
 
+    // refs para foco automático
+    const nameRef = useRef<HTMLInputElement>(null);
+    const emailRef = useRef<HTMLInputElement>(null);
+    const phoneRef = useRef<HTMLInputElement>(null);
+    const messageRef = useRef<HTMLTextAreaElement>(null);
+
+    const fieldRefs: Record<string, any> = {
+        name: nameRef,
+        email: emailRef,
+        phone: phoneRef,
+        message: messageRef,
+    };
+
     const [errors, setErrors] = useState<FieldErrors>({});
     const [touched, setTouched] = useState<Record<string, boolean>>({});
     const [loading, setLoading] = useState(false);
 
+    // modal
     const [modalOpen, setModalOpen] = useState(false);
     const [modalType, setModalType] =
         useState<"success" | "error">("success");
     const [modalTitle, setModalTitle] = useState("");
     const [modalMessage, setModalMessage] = useState("");
 
+    // validação central
     function validate(data: any) {
         const result = leadSchema.safeParse(data);
 
@@ -42,6 +57,7 @@ export default function LeadForm() {
         return {};
     }
 
+    // blur validation
     function handleBlur(
         e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
     ) {
@@ -56,6 +72,7 @@ export default function LeadForm() {
         setErrors(validate(data));
     }
 
+    // limpa erro ao digitar
     function handleChange(
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) {
@@ -66,6 +83,7 @@ export default function LeadForm() {
         }
     }
 
+    // GA4 tracking
     function trackLead() {
         if (typeof window !== "undefined" && (window as any).gtag) {
             (window as any).gtag("event", "generate_lead", {
@@ -75,6 +93,7 @@ export default function LeadForm() {
         }
     }
 
+    // submit
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
@@ -87,6 +106,11 @@ export default function LeadForm() {
 
         if (Object.keys(validation).length > 0) {
             setErrors(validation);
+
+            // foco automático no primeiro erro
+            const firstError = Object.keys(validation)[0];
+            fieldRefs[firstError]?.current?.focus();
+
             return;
         }
 
@@ -102,9 +126,7 @@ export default function LeadForm() {
             if (!res.ok) {
                 setModalType("error");
                 setModalTitle("Erro ao enviar");
-                setModalMessage(
-                    "Não foi possível enviar. Tente novamente."
-                );
+                setModalMessage("Tente novamente em instantes.");
                 setModalOpen(true);
                 return;
             }
@@ -118,20 +140,23 @@ export default function LeadForm() {
 
             setModalType("success");
             setModalTitle("Solicitação enviada!");
-            setModalMessage(
-                "Recebemos seu pedido. Em breve entraremos em contato."
-            );
+            setModalMessage("Em breve entraremos em contato.");
             setModalOpen(true);
         } finally {
             setLoading(false);
         }
     }
 
-    const inputClass = (field: keyof FieldErrors) =>
-        `border p-3 w-full rounded ${touched[field] && errors[field]
-            ? "border-red-500"
-            : "border-gray-300"
-        }`;
+    // input style (valid / invalid + shake)
+    const inputClass = (field: keyof FieldErrors) => {
+        const hasError = touched[field] && errors[field];
+        const isValid = touched[field] && !errors[field];
+
+        return `border p-3 w-full rounded transition outline-none
+      ${hasError ? "border-red-500 shake" : ""}
+      ${isValid ? "border-green-500" : "border-gray-300"}
+    `;
+    };
 
     return (
         <>
@@ -142,14 +167,16 @@ export default function LeadForm() {
             >
                 <div className="text-center">
                     <h2 className="text-xl font-bold">
-                        Diagnóstico gratuito
+                        Diagnóstico estratégico gratuito
                     </h2>
                     <p className="text-sm text-gray-500">
                         Resposta em até 24h
                     </p>
                 </div>
 
+                {/* NAME */}
                 <input
+                    ref={nameRef}
                     name="name"
                     placeholder="Nome *"
                     className={inputClass("name")}
@@ -160,7 +187,9 @@ export default function LeadForm() {
                     <p className="text-red-500 text-sm">{errors.name}</p>
                 )}
 
+                {/* EMAIL */}
                 <input
+                    ref={emailRef}
                     name="email"
                     placeholder="Email *"
                     className={inputClass("email")}
@@ -171,7 +200,9 @@ export default function LeadForm() {
                     <p className="text-red-500 text-sm">{errors.email}</p>
                 )}
 
+                {/* PHONE */}
                 <input
+                    ref={phoneRef}
                     name="phone"
                     placeholder="WhatsApp"
                     className={inputClass("phone")}
@@ -182,9 +213,11 @@ export default function LeadForm() {
                     onBlur={handleBlur}
                 />
 
+                {/* MESSAGE */}
                 <textarea
+                    ref={messageRef}
                     name="message"
-                    placeholder="Objetivo *"
+                    placeholder="Seu objetivo *"
                     rows={4}
                     className={inputClass("message")}
                     onBlur={handleBlur}
@@ -194,14 +227,16 @@ export default function LeadForm() {
                     <p className="text-red-500 text-sm">{errors.message}</p>
                 )}
 
+                {/* CTA */}
                 <button
                     disabled={loading}
-                    className="bg-black text-white p-3 rounded font-semibold"
+                    className="bg-black text-white p-3 rounded font-semibold hover:bg-gray-800 transition"
                 >
                     {loading ? "Enviando..." : "Quero meu diagnóstico →"}
                 </button>
             </form>
 
+            {/* MODAL */}
             <FeedbackModal
                 open={modalOpen}
                 type={modalType}
