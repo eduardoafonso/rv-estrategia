@@ -1,15 +1,16 @@
 import Script from "next/script";
-
+import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://rv-estrategia.vercel.app";
-export const metadata = {
+
+export const metadata: Metadata = {
 
     metadataBase: new URL(SITE_URL),
 
     title: {
         default:
             "Rita Vanin | Estrategista Digital",
-        template: "%s | Rita Vanin Rita Vanin | Estrategista Digital",
+        template: "Rita Vanin - Estrategista Digital | %s",
     },
 
     description:

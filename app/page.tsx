@@ -1,23 +1,31 @@
+import { SITE_URL } from "@/lib/site";
+
 export const metadata = {
-  title: "Mais Clientes com Estratégia Digital",
-  description:
-    "Especialista em posicionamento digital para empre",
+  title: "Rita | Estrategista Digital",
+
 };
 
 export default function Home() {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    name: "Rita Vanin",
+    url: SITE_URL,
+    description:
+      "Especialista em posicionamento digital para empresas e profissionais liberais.",
+  };
+
   return (
     <main>
-      <h1>Rita Vanin | Estrategista Digital</h1>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(schema),
+        }}
+      />
 
-      <p>
-        Ajudo médicos, advogados e dentistas a conquistarem mais clientes através
-        do posicionamento estratégico no Instagram, Facebook e TikTok.
-      </p>
-
-      <p>
-        Mais de 10 anos de experiência em marketing digital com foco em
-        crescimento e autoridade online.
-      </p>
+      <h1>Rita Vanin</h1>
+      <p>Estrategista Digital</p>
     </main>
   );
 }
