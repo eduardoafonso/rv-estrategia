@@ -1,7 +1,7 @@
 import { SITE_URL } from "@/lib/site";
 
 export const metadata = {
-  title: "Rita V | Estrategista Digital",
+  title: "Rita Vanin | Estrategista Digital",
 
 };
 
