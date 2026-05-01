@@ -1,3 +1,4 @@
+import LeadForm from "@/components/LeadForm";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata = {
@@ -16,7 +17,7 @@ export default function Home() {
   };
 
   return (
-    <main>
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -24,8 +25,25 @@ export default function Home() {
         }}
       />
 
-      <h1>Rita Vanin</h1>
-      <p>Estrategista Digital</p>
-    </main>
+      <main className="flex flex-col items-center justify-center gap-12 p-10">
+
+        {/* HERO */}
+        <section className="text-center max-w-2xl">
+          <h1 className="text-4xl font-bold">
+            Rita Vanin | Estrategista Digital
+          </h1>
+
+          <p className="mt-4 text-gray-600">
+            Posicionamento digital. Atraia clientes com estratégia nas redes sociais.
+          </p>
+        </section>
+
+        {/* FORM */}
+        <section className="w-full flex justify-center">
+          <LeadForm />
+        </section>
+
+      </main>
+    </>
   );
 }

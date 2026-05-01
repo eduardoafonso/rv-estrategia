@@ -1,3 +1,4 @@
+import "./globals.css";
 import Script from "next/script";
 import type { Metadata } from "next";
 import { SITE_URL } from "@/lib/site";
