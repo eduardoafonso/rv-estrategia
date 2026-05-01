@@ -83,14 +83,17 @@ export default function RootLayout({
 
                         <Script id="ga4" strategy="afterInteractive">
                             {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-                gtag('js', new Date());
-
-                // IMPORTANTE: não sobrescrever page_path manualmente
-                gtag('config', '${GA_ID}');
-              `}
+    // Isso força o GA a ignorar filtros de IP por um momento e aparecer no DebugView
+    gtag('config', '${GA_ID}', {
+      'debug_mode': true,
+      'send_page_view': true
+    });
+    console.log("GA4 inicializado com ID: ${GA_ID}");
+  `}
                         </Script>
                     </>
                 )}
